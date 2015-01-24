@@ -10,7 +10,7 @@ var root = '__tests__';
 fowl.open();
 
 describe("Top Level", function(){
-  
+
   before(function(done){
     fowl.remove('__ind');
     fowl.remove(root);
@@ -20,7 +20,7 @@ describe("Top Level", function(){
       done();
     });
   });
-  
+
   after(function(done){
     var tr = fowl.transaction();
     tr.remove('animals');
@@ -31,7 +31,7 @@ describe("Top Level", function(){
       done();
     })
   });
-  
+
   it("Create", function(done){
     fowl.create('animals', {name: 'fox', legs: 4}).then(function(foxId){
       expect(foxId).to.be.a('string');
@@ -45,13 +45,13 @@ describe("Top Level", function(){
       });
     });
   });
-  
-  it("Update document", function(done){  
+
+  it("Update document", function(done){
     fowl.create('animals', {name: 'tiger', legs: 4}).then(function(tigerId){
       expect(tigerId).to.be.a('string');
-    
+
       fowl.put(['animals', tigerId], {legs: 3});
-    
+
       fowl.get(['animals', tigerId]).then(function(tiger){
         expect(tiger).to.have.property('name');
         expect(tiger).to.have.property('legs');
@@ -61,10 +61,10 @@ describe("Top Level", function(){
       done();
     });
   });
-  
-  it("Remove document", function(done){  
+
+  it("Remove document", function(done){
     fowl.create([root, 'animals'], {name: 'fox', legs: 4}).then(function(docId){
-    
+
       fowl.remove([root, 'animals', docId]).then(function(){
         fowl.get([root, 'animals', docId]).then(function(doc){
           expect(doc).to.be.a('undefined');
@@ -73,7 +73,7 @@ describe("Top Level", function(){
       });
     });
   });
-  
+
   it("Find by filtering some property", function(done){
     fowl.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50}).then(function(){
       fowl.create([root, 'people'], { name: "Lisa", balance: 30}).then(function(){
@@ -85,5 +85,5 @@ describe("Top Level", function(){
       })
     })
   });
-  
+
 });

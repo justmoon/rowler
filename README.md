@@ -1,7 +1,7 @@
 #Fowl - NodeJS Document and Query Layer for FDB
 
 A NodeJS Layer for [FoundationDB](http://www.foundationdb.com) that provides documents and queries
-with similar capabilities to MongoDB but providing support for 
+with similar capabilities to MongoDB but providing support for
 multidocument transactions.
 
 Transaction support is an incredile powerful feature that simplifies
@@ -92,7 +92,7 @@ tr.get(['people', 'lisa', 'balance']).then(function(lisaBalance){
 tr.commit().then(function(){
   // We need to wait for the commit to complete since we are finding the
   // same keypaths.
-  
+
   fowl.find('people', {balance: 90}, ['lastname']).then(function(docs){
     // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
   })
@@ -131,11 +131,11 @@ spawning multiple documents.
 
 ## About Key Paths
 
-Key paths are used in fowl to represent the location of some document or 
-subdocument. It is just an array of strings (or numbers) that maps to a 
+Key paths are used in fowl to represent the location of some document or
+subdocument. It is just an array of strings (or numbers) that maps to a
 key or key range inside FoundationDB.
 Key paths are more flexible than bucket based collections, as used for example
-in mongoDB, since it allows you to specify a document or subdocument in a 
+in mongoDB, since it allows you to specify a document or subdocument in a
 generic way.
 
 For example:
@@ -158,13 +158,13 @@ be converted to an array:
 
 ## About  the _id property
 
-As in MongoDB, we generate a unique *_id* property as a primary key for all the 
+As in MongoDB, we generate a unique *_id* property as a primary key for all the
 created documents.
 
 This property can be overrided if required by providing it explicitly in the
 document object.
 
-It is also possible skip the use of the *_id* property by just using the put 
+It is also possible skip the use of the *_id* property by just using the put
 method directly and never calling create.
 
 ## Methods
@@ -177,7 +177,7 @@ fdb##open
 You need to call this method before you can start using the rest of the API.
 
 __Arguments__
- 
+
 ```javascript
     clusterFile {String} Optional path to a cluster file.
     dbName {String} Optional database name.
@@ -193,7 +193,7 @@ object without any circular dependencies.
 Returns a promise that will resolve to the document *_id* property.
 
 __Arguments__
- 
+
 ```javascript
     keyPath {Array|String} Keypath with the target location for the document.
     doc {Object} A plain object representing the document to store.
@@ -209,7 +209,7 @@ Updates a document. Similar to *create* but will not generate any _id property
 automatically.
 
 __Arguments__
- 
+
 ```javascript
     keyPath {Array|String} Keypath with the target location for the document.
     doc {Object} A plain object representing the document to store.
@@ -224,7 +224,7 @@ __Arguments__
 Retrieves the document at the given key path.
 
 __Arguments__
- 
+
 ```javascript
     keyPath {Array|String} Keypath with the target location for the document.
     returns {Promise} A promise that resolves with the retrieved document.
@@ -238,7 +238,7 @@ __Arguments__
 Removes the document/subdocument at the given key path.
 
 __Arguments__
- 
+
 ```javascript
   keyPath {Array|String} Keypath with the target location for the document to remove.
   returns {Promise} A promise that resolves after the removal.  
@@ -249,10 +249,10 @@ __Arguments__
 <a name="find"/>
 ### find(keyPath, filter, [fields])
 
-Finds documents in the given keypath that meets certain criteria. 
+Finds documents in the given keypath that meets certain criteria.
 
 __Arguments__
- 
+
 ```javascript
   keyPath {Array|String} Keypath with the target location of the documents to find
   filter {Object} An object mapping properties to their values.
@@ -266,7 +266,7 @@ __Arguments__
 <a name="transaction"/>
 ### transaction()
 
-Creates a new transaction. A transaction is an object that provides methods 
+Creates a new transaction. A transaction is an object that provides methods
 to access the database as an atomic operation.
 
 
@@ -275,12 +275,12 @@ to access the database as an atomic operation.
 <a name="open"/>
 #### transaction##commit()
 
-Commits this transaction by executing all the operations and resolving their 
+Commits this transaction by executing all the operations and resolving their
 promises. It returns a promise that is resolved when all operations have been
 executed.
 
 __Arguments__
- 
+
 ```javascript
     returns {Promise} A promise resolved when the commit has been executed.
 ```
@@ -313,7 +313,7 @@ everytime the key paths with the given fields are updated, an index is also
 updated so that queries on such fields can be performed much faster.
 
 __Arguments__
- 
+
 ```javascript
   keyPath {Array|String} base key path for the index.
   fields {String|Array} A field or array of fields to index.
@@ -332,7 +332,7 @@ queries if possible. Note that the order of the operators can affect performance
 it is always better to use indexed properties first.
 
 __Arguments__
- 
+
 ```javascript
   keyPath {Array|String} base key path for the query.
   fields {String|Array} A field or array of fields to return on the matched documents.
@@ -359,7 +359,7 @@ Matches documents where the given property is less or equal than the given value
 Executes the query. Returns a promise that resolves to the result of the query.
 
 
-##License 
+##License
 
 (The MIT License)
 

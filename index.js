@@ -24,7 +24,7 @@ function query(keyPath, fields, opts){
 exports.open = function(clusterFile, dbName)
 {
   db = fdb.open(clusterFile, dbName);
-  
+
   var tr = transaction();
   indexes.readMeta(tr).then(function(meta){
     indexMeta = meta || {};
@@ -76,7 +76,7 @@ exports.put = function(keyPath, args){
     return res;
   });
 }
-  
+
 exports.get = function(keyPath){
   var tr = transaction();
   var res = tr.get(keyPath);
@@ -84,7 +84,7 @@ exports.get = function(keyPath){
     return res;
   });
 }
-  
+
 exports.remove = function(keyPath){
   var tr = transaction();
   var res = tr.remove(keyPath);

@@ -47,23 +47,23 @@ suite
       defer.resolve();
     });
   })
-  
+
   /*
   .add('Create large objects, one per transaction', function(defer){
-  
+
   })
-  
+
   .add('Create large objects, one transaction', function(defer){
-  
+
   })
   */
-  
+
   .on('start', function(event){
     console.log("Starting benchmark: "+event.target.name);
   })
   .on('cycle', function(event){
-    console.log(event.target.name, 
-                "Mean: "+Math.round(event.target.stats.mean*1000)+'ms', 
+    console.log(event.target.name,
+                "Mean: "+Math.round(event.target.stats.mean*1000)+'ms',
                 "Variance: "+Math.round(event.target.stats.variance*1000)+'ms');
   })
   .on('complete', function(){
@@ -74,23 +74,20 @@ suite
 
 function createObjects(data){
   var ops = []
-  
+
   for(var i=0; i<NUM_OBJECTS; i++){
     ops.push(fowl.create('benchmarks', data));
   }
-  
+
   return bluebird.all(ops)
 }
 
 function createObjectsOneTransaction(data){
   var tr = fowl.transaction();
-  
+
   for(var i=0; i<NUM_OBJECTS; i++){
     tr.create('benchmarks', data);
   }
-  
+
   return tr.commit();
 }
-
-
-
