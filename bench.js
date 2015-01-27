@@ -41,12 +41,13 @@ suite
     createObjects(mediumSize).then(function(){
       defer.resolve();
     });
-  })
-  .add('Create medium objects, one transaction', function(defer){
-    createObjects(mediumSize).then(function(){
-      defer.resolve();
-    });
-  })
+  }, {defer:true})
+  // The following test would exceed FoundationDB's transaction size limit
+  // .add('Create medium objects, one transaction', function(defer){
+  //   createObjectsOneTransaction(mediumSize).then(function(){
+  //     defer.resolve();
+  //   });
+  // }, {defer:true})
 
   /*
   .add('Create large objects, one per transaction', function(defer){
@@ -83,11 +84,9 @@ function createObjects(data){
 }
 
 function createObjectsOneTransaction(data){
-  var tr = fowl.transaction();
-
-  for(var i=0; i<NUM_OBJECTS; i++){
-    tr.create('benchmarks', data);
-  }
-
-  return tr.commit();
+  return fowl.transaction(function(tr){
+    for(var i=0; i<NUM_OBJECTS; i++){
+      tr.create('benchmarks', data);
+    }
+  });
 }

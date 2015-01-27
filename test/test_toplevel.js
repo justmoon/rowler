@@ -2,6 +2,7 @@
 
 var fowl = require('../index');
 var chai = require('chai');
+var Promise = require('bluebird');
 
 var expect = chai.expect;
 
@@ -11,25 +12,23 @@ fowl.open();
 
 describe("Top Level", function(){
 
-  before(function(done){
-    fowl.remove('__ind');
-    fowl.remove(root);
-    fowl.remove('animals');
-    fowl.remove('people');
-    fowl.remove('tests').then(function(){
-      done();
-    });
+  before(function(){
+    return Promise.all([
+      fowl.remove('__ind'),
+      fowl.remove(root),
+      fowl.remove('animals'),
+      fowl.remove('people'),
+      fowl.remove('tests')
+    ]);
   });
 
-  after(function(done){
-    var tr = fowl.transaction();
-    tr.remove('animals');
-    tr.remove('people');
-    tr.remove(root);
-    tr.remove(['__ind', root]);
-    tr.commit().then(function(){
-      done();
-    })
+  after(function(){
+    return fowl.transaction(function(tr){
+      tr.remove('animals');
+      tr.remove('people');
+      tr.remove(root);
+      tr.remove(['__ind', root]);
+    });
   });
 
   it("Create", function(done){

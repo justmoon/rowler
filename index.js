@@ -2,6 +2,7 @@
 
 var fdb = require('fdb').apiVersion(200);
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 var indexes = require('./lib/indexes');
 var Transaction = require('./lib/transaction');
@@ -13,8 +14,20 @@ var Query = require('./lib/query');
 var db;
 var indexMeta = {};
 
-function transaction(){
-  return new Transaction(fdb, db, indexMeta);
+function transaction(fn){
+  var _this = this;
+
+  if ("function" !== typeof fn) {
+    throw new Error("Invalid use of transaction(): First argument must be a function containing the transaction body.");
+  }
+
+  //
+  // We use superior bluebird promises instead of fdb built-in ones.
+  //
+  return Promise.resolve(db.doTransaction(function(tr, cb){
+    tr = new Transaction(tr, fdb, db, indexMeta);
+    tr.do(fn).nodeify(cb);
+  }));
 }
 
 function query(keyPath, fields, opts){
@@ -25,11 +38,11 @@ exports.open = function(clusterFile, dbName)
 {
   db = fdb.open(clusterFile, dbName);
 
-  var tr = transaction();
-  indexes.readMeta(tr).then(function(meta){
-    indexMeta = meta || {};
+  transaction(function(tr){
+    return indexes.readMeta(tr).then(function(meta){
+      indexMeta = meta || {};
+    });
   });
-  tr.commit();
 }
 
 exports.options = fdb.options;
@@ -42,12 +55,12 @@ exports.query = query;
 exports.addIndex = function(keyPath, fields)
 {
   fields = _.isArray(fields) ? fields : [fields];
-  var tr = transaction();
-  for(var i=0; i<fields.length; i++){
-    indexes.makeIndex(tr, keyPath, fields[i]);
-    indexMeta[keyPath.join('/')] = true;
-  }
-  return tr.commit();
+  return transaction(function(tr){
+    for(var i=0; i<fields.length; i++){
+      indexes.makeIndex(tr, keyPath, fields[i]);
+      indexMeta[keyPath.join('/')] = true;
+    }
+  });
 }
 
 /**
@@ -62,41 +75,31 @@ exports.rebuildIndex = function(keyPath, fields)
   Single operations bluebird no transactions needed.
 */
 exports.create = function(keyPath, args){
-  var tr = transaction();
-  var res = tr.create(keyPath, args);
-  return tr.commit().then(function(){
-    return res;
+  return transaction(function(tr){
+    return tr.create(keyPath, args);
   });
 }
 
 exports.put = function(keyPath, args){
-  var tr = transaction();
-  var res = tr.put(keyPath, args);
-  return tr.commit().then(function(){
-    return res;
+  return transaction(function(tr){
+    return tr.put(keyPath, args);
   });
 }
 
 exports.get = function(keyPath){
-  var tr = transaction();
-  var res = tr.get(keyPath);
-  return tr.commit().then(function(){
-    return res;
+  return transaction(function(tr){
+    return tr.get(keyPath);
   });
 }
 
 exports.remove = function(keyPath){
-  var tr = transaction();
-  var res = tr.remove(keyPath);
-  return tr.commit().then(function(){
-    return res;
+  return transaction(function(tr){
+    return tr.remove(keyPath);
   });
 }
 
 exports.find = function(keyPath, where, fields, options){
-  var tr = transaction();
-  var res = tr.find(keyPath, where, fields, options);
-  return tr.commit().then(function(){
-    return res;
+  return transaction(function(tr){
+    return tr.find(keyPath, where, fields, options);
   });
 }

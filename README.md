@@ -79,17 +79,17 @@ var lisa = fowl.create('people', {
 });
 
 // Use transactions to transfer money from one account to another
-var tr = fowl.transaction()
+fowl.transaction(function(tr){
+  Promise.all([
+    tx.get(['people', 'john']),
+    tx.get(['people', 'lisa'])
+  ]).spread(function (john, lisa) {
+    john.balance -= 10;
+    lisa.balance += 10;
 
-tr.get(['people', 'john', 'balance']).then(function(johnBalance){
-  tr.put(['people', 'john', 'balance'], johnBalance - 10);
-});
-
-tr.get(['people', 'lisa', 'balance']).then(function(lisaBalance){
-  tr.put(['people','lisa', 'balance'], lisaBalance + 10);
-})
-
-tr.commit().then(function(){
+    tr.put(['people', 'john'], john);
+    tr.put(['people', 'lisa'], lisa);
+}).then(function(){
   // We need to wait for the commit to complete since we are finding the
   // same keypaths.
 
@@ -256,34 +256,39 @@ __Arguments__
 ```javascript
   keyPath {Array|String} Keypath with the target location of the documents to find
   filter {Object} An object mapping properties to their values.
-  fields {Array} An optiona array of property names that should be returned.
+  fields {Array} An options array of property names that should be returned.
   returns {Promise} A promise that resolves with the found documents.
 ```
 
 ---------------------------------------
 
-
 <a name="transaction"/>
-### transaction()
+### transaction(transactionBody)
 
 Creates a new transaction. A transaction is an object that provides methods
 to access the database as an atomic operation.
 
+When calling this method, a new transaction object will be created and passed to
+the provided callback function. Once that callback returns, the transaction will
+automatically commit. The callback may return a Promise to delay the commit.
 
----------------------------------------
+If the callback throws an exception (or rejects its Promise), fdb's retry logic
+will apply. Transactions may also be retried due to committing with [unknown
+result](https://foundationdb.com/key-value-store/documentation/developer-guide.html#transactions-with-unknown-results)
+which means developers should ensure transactions are idempotent.
 
-<a name="open"/>
-#### transaction##commit()
-
-Commits this transaction by executing all the operations and resolving their
-promises. It returns a promise that is resolved when all operations have been
-executed.
+This method is analogous to `fdb#doTransaction`.
 
 __Arguments__
 
 ```javascript
-    returns {Promise} A promise resolved when the commit has been executed.
+  transactionBody(transaction) {Function} This method should contain all
+    transaction operations and may return a Promise in which case the commit
+    will take place when that Promise is resolved.
+  returns {Promise} A promise that resolves after the transaction has executed.
 ```
+
+---------------------------------------
 
 #### transaction##create()
 
