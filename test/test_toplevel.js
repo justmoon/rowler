@@ -85,4 +85,16 @@ describe("Top Level", function(){
     })
   });
 
+  it("Retrieve individual property", function(done){
+    fowl.create([root, 'people'], { _id: "John", lastname: "Smith", balance: 50}).then(function(){
+      fowl.create([root, 'people'], { _id: "Lisa", balance: 30}).then(function(){
+        fowl.get([root, 'people', 'Lisa', 'balance']).then(function(result){
+          expect(result).to.be.a('number');
+          expect(result).to.be.eql(30);
+          done();
+        });
+      })
+    })
+  });
+
 });
