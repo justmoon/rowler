@@ -69,37 +69,15 @@ exports.addIndex = function(keyPath, fields)
 exports.rebuildIndex = function(keyPath, fields)
 {
   // TO IMPLEMENT
-}
+};
 
 /**
-  Single operations bluebird no transactions needed.
-*/
-exports.create = function(keyPath, args){
-  return transaction(function(tr){
-    return tr.create(keyPath, args);
-  });
-}
-
-exports.put = function(keyPath, args){
-  return transaction(function(tr){
-    return tr.put(keyPath, args);
-  });
-}
-
-exports.get = function(keyPath){
-  return transaction(function(tr){
-    return tr.get(keyPath);
-  });
-}
-
-exports.remove = function(keyPath){
-  return transaction(function(tr){
-    return tr.remove(keyPath);
-  });
-}
-
-exports.find = function(keyPath, where, fields, options){
-  return transaction(function(tr){
-    return tr.find(keyPath, where, fields, options);
-  });
-}
+ * Shorthand for single operations.
+ */
+['create', 'put', 'get', 'remove', 'find'].forEach(function (method) {
+  exports[method] = function(keyPath, args){
+    return transaction(function(tr){
+      return tr[method](keyPath, args);
+    });
+  }
+});
