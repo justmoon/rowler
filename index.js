@@ -1,83 +1,50 @@
 "use strict";
 
 var fdb = require('fdb').apiVersion(200);
-var _ = require('lodash');
-var Promise = require('bluebird');
-
-var indexes = require('./lib/indexes');
-var Transaction = require('./lib/transaction');
+var Database = require('./lib/database');
 var Query = require('./lib/query');
-
-//
-// Globals
-//
-var db;
-var indexMeta = {};
-
-function transaction(fn){
-  var _this = this;
-
-  if ("function" !== typeof fn) {
-    throw new Error("Invalid use of transaction(): First argument must be a function containing the transaction body.");
-  }
-
-  //
-  // We use superior bluebird promises instead of fdb built-in ones.
-  //
-  return Promise.resolve(db.doTransaction(function(tr, cb){
-    tr = new Transaction(tr, fdb, db, indexMeta);
-    tr.do(fn).nodeify(cb);
-  }));
-}
-
-function query(keyPath, fields, opts){
-  return new Query(keyPath, fields, opts)
-}
-
-exports.open = function(clusterFile, dbName)
-{
-  db = fdb.open(clusterFile, dbName);
-
-  transaction(function(tr){
-    return indexes.readMeta(tr).then(function(meta){
-      indexMeta = meta || {};
-    });
-  });
-}
+var Transaction = require('./lib/transaction');
 
 exports.options = fdb.options;
-exports.transaction = transaction;
-exports.query = query;
 
 /**
-  Add a index
-*/
-exports.addIndex = function(keyPath, fields)
-{
-  fields = _.isArray(fields) ? fields : [fields];
-  return transaction(function(tr){
-    for(var i=0; i<fields.length; i++){
-      indexes.makeIndex(tr, keyPath, fields[i]);
-      indexMeta[keyPath.join('/')] = true;
-    }
-  });
-}
+ * Simplified database API.
+ */
+var defaultDb = null;
 
-/**
-  Rebuilds a index.
-*/
-exports.rebuildIndex = function(keyPath, fields)
-{
-  // TO IMPLEMENT
+exports.open = function (clusterFile) {
+  defaultDb = new Database();
+  defaultDb.open(clusterFile);
+
+  exports.transaction = defaultDb.transaction.bind(defaultDb);
+  exports.addIndex = defaultDb.addIndex.bind(defaultDb);
 };
 
 /**
  * Shorthand for single operations.
  */
-['create', 'put', 'get', 'remove', 'find'].forEach(function (method) {
+Transaction.queryMethods.forEach(function (method) {
   exports[method] = function(keyPath, args){
-    return transaction(function(tr){
+    return defaultDb.transaction(function(tr){
       return tr[method](keyPath, args);
     });
   }
 });
+
+/**
+ * Query API
+ */
+
+function query(keyPath, fields, opts){
+  return new Query(keyPath, fields, opts)
+}
+
+exports.query = query;
+
+/**
+ * Object-oriented API
+ */
+
+exports.Database = Database;
+exports.Query = Query;
+exports.Transaction = Transaction;
