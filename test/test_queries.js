@@ -13,13 +13,13 @@ fowl.open();
 describe("Queries", function(){
 
   beforeEach(function(){
-    return Promise.all([
-      fowl.remove('__ind'),
-      fowl.remove(root),
-      fowl.remove('animals'),
-      fowl.remove('people'),
-      fowl.remove('tests')
-    ]);
+    return fowl.transaction(function(tr){
+      tr.remove('__ind');
+      tr.remove(root);
+      tr.remove('animals');
+      tr.remove('people');
+      tr.remove('tests');
+    });
   });
 
   after(function(){
@@ -250,9 +250,9 @@ describe("Queries", function(){
         }).then(function(docs){
           expect(docs).to.have.length(2)
           expect(docs[0]).to.have.property('name', 'Joshua');
-          expect(docs[0]).to.have.property('balance', 30);
+          expect(docs[0]).to.have.property('balance', 45);
           expect(docs[1]).to.have.property('name', 'Joshua');
-          expect(docs[1]).to.have.property('balance', 45);
+          expect(docs[1]).to.have.property('balance', 30);
         });
       });
     });
