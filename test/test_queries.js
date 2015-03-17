@@ -226,16 +226,27 @@ describe("Queries", function(){
         //
         // Add many documents
         //
-        tr.create(keyPath, {name: "Joshua", balance: 30});
-        tr.create(keyPath, {name: "Joshua", balance: 45});
-
         for(var i=0; i< 50; i++){
-          tr.create(keyPath, {
-            _id: i,
-            name: "John",
-            lastname: "Smith",
-            balance: Math.round(Math.random()*100)
-          });
+          if (i === 13) {
+            tr.create(keyPath, {
+              _id: i,
+              name: "Joshua",
+              balance: 30
+            });
+          } else if (i === 33) {
+            tr.create(keyPath, {
+              _id: i,
+              name: "Joshua",
+              balance: 45
+            });
+          } else {
+            tr.create(keyPath, {
+              _id: i,
+              name: "John",
+              lastname: "Smith",
+              balance: Math.round(Math.random()*100)
+            });
+          }
         }
       }).then(function(){
         var time = Date.now();
@@ -250,9 +261,9 @@ describe("Queries", function(){
         }).then(function(docs){
           expect(docs).to.have.length(2)
           expect(docs[0]).to.have.property('name', 'Joshua');
-          expect(docs[0]).to.have.property('balance', 45);
+          expect(docs[0]).to.have.property('balance', 30);
           expect(docs[1]).to.have.property('name', 'Joshua');
-          expect(docs[1]).to.have.property('balance', 30);
+          expect(docs[1]).to.have.property('balance', 45);
         });
       });
     });
@@ -300,16 +311,28 @@ describe("Queries", function(){
         //
         // Add many documents
         //
-        tr.create(keyPath, {name: "Joshua", balance: 30});
-        tr.create(keyPath, {name: "Joshua", balance: 45});
 
         for(var i=0; i< 50; i++){
-          tr.create(keyPath, {
-            _id: i,
-            name: "John",
-            lastname: "Smith",
-            balance: Math.round(Math.random()*100)
-          });
+          if (i === 13) {
+            tr.create(keyPath, {
+              _id: i,
+              name: "Joshua",
+              balance: 30
+            });
+          } else if (i === 33) {
+            tr.create(keyPath, {
+              _id: i,
+              name: "Joshua",
+              balance: 45
+            });
+          } else {
+            tr.create(keyPath, {
+              _id: i,
+              name: "John",
+              lastname: "Smith",
+              balance: Math.round(Math.random()*100)
+            });
+          }
         }
       }).then(function(){
         var time = Date.now();
