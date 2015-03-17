@@ -34,10 +34,11 @@ describe("Transactions", function(){
   describe("Creation", function(){
     it("Create document", function(){
       return fowl.transaction(function(tr){
-        return tr.create('animals', {name: 'fox', legs: 4}).then(function(foxId){
-          expect(foxId).to.be.a('string');
-          return tr.get(['animals', foxId]);
-        }).then(function(fox){
+        var foxId = tr.create('animals', {name: 'fox', legs: 4});
+
+        expect(foxId).to.be.a('string');
+
+        return tr.get(['animals', foxId]).then(function(fox){
           expect(fox).to.be.an('object');
           expect(fox).to.have.property('name');
           expect(fox).to.have.property('legs');
@@ -147,17 +148,17 @@ describe("Transactions", function(){
   describe("Update", function(){
     it("Update document", function(){
       return fowl.transaction(function(tr){
-        return tr.create('animals', {name: 'tiger', legs: 4}).then(function(tigerId){
-          expect(tigerId).to.be.a('string');
+        var tigerId = tr.create('animals', {name: 'tiger', legs: 4});
 
-          tr.put(['animals', tigerId], {legs: 3});
+        expect(tigerId).to.be.a('string');
 
-          return tr.get(['animals', tigerId]).then(function(tiger){
-            expect(tiger).to.have.property('name');
-            expect(tiger).to.have.property('legs');
-            expect(tiger.name).to.be.eql('tiger')
-            expect(tiger.legs).to.be.eql(3)
-          })
+        tr.put(['animals', tigerId], {legs: 3});
+
+        return tr.get(['animals', tigerId]).then(function(tiger){
+          expect(tiger).to.have.property('name');
+          expect(tiger).to.have.property('legs');
+          expect(tiger.name).to.be.eql('tiger')
+          expect(tiger.legs).to.be.eql(3)
         });
       });
     });
@@ -200,13 +201,12 @@ describe("Transactions", function(){
   describe("Removal", function(){
     it("Remove document", function(){
       return fowl.transaction(function(tr){
-        tr.create([root, 'animals'], {name: 'fox', legs: 4}).then(function(docId){
+        var docId = tr.create([root, 'animals'], {name: 'fox', legs: 4});
 
-          tr.remove([root, 'animals', docId]);
+        tr.remove([root, 'animals', docId]);
 
-          return tr.get([root, 'animals', docId]).then(function(doc){
-            expect(doc).to.be.a('undefined');
-          })
+        return tr.get([root, 'animals', docId]).then(function(doc){
+          expect(doc).to.be.a('undefined');
         });
       });
     });
