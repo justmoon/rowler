@@ -1,6 +1,6 @@
 {
   "name": "fowler",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Document and Query Layer for FoundationDB",
   "main": "index.js",
   "scripts": {
@@ -17,10 +17,12 @@
     "email": "justmoon@members.fsf.org>",
     "url": "https://justmoon.net"
   },
-  "contributors": [{
-    "name": "Manuel Astudillo",
-    "email": "manuel@optimalbits.com"
-  }],
+  "contributors": [
+    {
+      "name": "Manuel Astudillo",
+      "email": "manuel@optimalbits.com"
+    }
+  ],
   "license": "BSD",
   "dependencies": {
     "bluebird": "2.9.13",
