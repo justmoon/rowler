@@ -1,18 +1,26 @@
 {
-  "name": "fowl",
+  "name": "fowler",
   "version": "0.1.0",
   "description": "Document and Query Layer for FoundationDB",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/ --reporter spec"
   },
-  "repository": "git://github.com/optimalbits/fowl.git",
+  "repository": "git://github.com/justmoon/fowler.git",
   "keywords": [
     "foundationdb",
     "object-modelling",
     "query"
   ],
-  "author": "Manuel Astudillo",
+  "author": {
+    "name": "Stefan Thomas",
+    "email": "justmoon@members.fsf.org>",
+    "url": "https://justmoon.net"
+  },
+  "contributors": [{
+    "name": "Manuel Astudillo",
+    "email": "manuel@optimalbits.com"
+  }],
   "license": "BSD",
   "dependencies": {
     "bluebird": "2.9.13",
