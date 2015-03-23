@@ -1,29 +1,29 @@
 "use strict";
 
 var Promise = require('bluebird');
-var fowl = require('../index');
+var fowler = require('../index');
 var chai = require('chai');
 
 var expect = chai.expect;
 
 var root = '__tests__';
 
-fowl.open();
+fowler.open();
 
 describe("Transactions", function(){
 
   before(function(){
     return Promise.all([
-      fowl.remove('__ind'),
-      fowl.remove(root),
-      fowl.remove('animals'),
-      fowl.remove('people'),
-      fowl.remove('tests')
+      fowler.remove('__ind'),
+      fowler.remove(root),
+      fowler.remove('animals'),
+      fowler.remove('people'),
+      fowler.remove('tests')
     ]);
   });
 
   after(function(){
-    return fowl.transaction(function(tr){
+    return fowler.transaction(function(tr){
       tr.remove('animals');
       tr.remove('people');
       tr.remove(root);
@@ -33,7 +33,7 @@ describe("Transactions", function(){
 
   describe("Creation", function(){
     it("Create document", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         var foxId = tr.create('animals', {name: 'fox', legs: 4});
 
         expect(foxId).to.be.a('string');
@@ -49,7 +49,7 @@ describe("Transactions", function(){
     });
 
     it("A document should support sub-objects", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'objects',
           subobject: {foo: "bar", bar: "foo"}});
@@ -62,7 +62,7 @@ describe("Transactions", function(){
     });
 
     it("A document should support arrays", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'array',
           cars: ['lotus', 'ferrari', 'red bull', 'mercedes', 'renault']});
@@ -79,7 +79,7 @@ describe("Transactions", function(){
     });
 
     it("A document should support integers", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'numbers',
           balance: 50000});
@@ -91,7 +91,7 @@ describe("Transactions", function(){
     });
 
     it("A document should support decimals", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'numbers',
           balance: Math.PI});
@@ -104,7 +104,7 @@ describe("Transactions", function(){
 
 
     it("A document should support booleans", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'booleans',
           isValid: true
@@ -118,7 +118,7 @@ describe("Transactions", function(){
 
     it("A document should support dates", function(){
       var date = Date();
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'dates',
           start: date
@@ -131,7 +131,7 @@ describe("Transactions", function(){
     });
 
     it("A document should support dates", function(done){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create(root, {
           _id: 'null',
           value: null,
@@ -147,7 +147,7 @@ describe("Transactions", function(){
 
   describe("Update", function(){
     it("Update document", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         var tigerId = tr.create('animals', {name: 'tiger', legs: 4});
 
         expect(tigerId).to.be.a('string');
@@ -164,7 +164,7 @@ describe("Transactions", function(){
     });
 
     it("two documents in the same transaction", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create([root, 'people'], {_id: 1, name: "John", balance: 50});
         tr.create([root, 'people'], {_id: 2, name: "Lisa", balance: 30});
 
@@ -187,10 +187,10 @@ describe("Transactions", function(){
         });
       }).then(function(){
         return Promise.join(
-          fowl.get([root, 'people', 1]).then(function(john){
+          fowler.get([root, 'people', 1]).then(function(john){
             expect(john.balance).to.be.equal(40);
           }),
-          fowl.get([root, 'people', 2]).then(function(lisa){
+          fowler.get([root, 'people', 2]).then(function(lisa){
             expect(lisa.balance).to.be.equal(40);
           })
         );
@@ -200,7 +200,7 @@ describe("Transactions", function(){
 
   describe("Removal", function(){
     it("Remove document", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         var docId = tr.create([root, 'animals'], {name: 'fox', legs: 4});
 
         tr.remove([root, 'animals', docId]);

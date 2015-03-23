@@ -1,10 +1,10 @@
 "use strict";
 
 var Benchmark = require('benchmark');
-var fowl = require('./index');
+var fowler = require('./index');
 var bluebird = require('bluebird');
 
-fowl.open();
+fowler.open();
 
 var suite = new Benchmark.Suite;
 
@@ -77,14 +77,14 @@ function createObjects(data){
   var ops = []
 
   for(var i=0; i<NUM_OBJECTS; i++){
-    ops.push(fowl.create('benchmarks', data));
+    ops.push(fowler.create('benchmarks', data));
   }
 
   return bluebird.all(ops)
 }
 
 function createObjectsOneTransaction(data){
-  return fowl.transaction(function(tr){
+  return fowler.transaction(function(tr){
     for(var i=0; i<NUM_OBJECTS; i++){
       tr.create('benchmarks', data);
     }

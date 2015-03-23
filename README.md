@@ -1,4 +1,4 @@
-#Fowl - NodeJS Document and Query Layer for FDB
+# Fowler - NodeJS Document and Query Layer for FDB
 
 A NodeJS Layer for [FoundationDB](http://www.foundationdb.com) that provides documents and queries
 with similar capabilities to MongoDB but providing support for
@@ -15,36 +15,36 @@ higher level features such as schemas, models, validation, etc.
 
 All asynchronous operations return A+ compliant promises (provided by bluebirdjs).
 
-##Contribute
+## Contribute
 
-Do you like Fowl and want to bring it up to the next level? Do not hesitate to
+Do you like Fowler and want to bring it up to the next level? Do not hesitate to
 clone the project and start contributing to it! :)
 
-##Install
+## Install
 
 ```
-npm install fowl
+npm install fowler
 ```
 
-##Test
+## Test
 
 ```
 npm test
 ```
 
-##Features
+## Features
 - Clean API based on promises
 - Complete transaction support for all available operations.
 - Supports: create, get, update, remove, and find.
 - Access of documents and subdocuments seamless due to a keypath based design.
 
-##Roadmap
+## Roadmap
 - namespaces
 - Advanced queries (implement all mongodb query operators)
 - Joins
 - Profile and optimize
 
-##Documentation
+## Documentation
 
 * [open](#open)
 * [create](#create)
@@ -56,22 +56,22 @@ npm test
 * [addIndex](#addindex)
 * [query](#query)
 
-##Example
+## Example
 
 
 ```
 // Open a foundationDB database
-fowl.open();
+fowler.open();
 
 // Create a document (if _id not specify a GUID will be generated)
-var john = fowl.create('people', {
+var john = fowler.create('people', {
   _id: 'john',
   name: 'John',
   lastname: 'Smith',
   balance: 100
 });
 
-var lisa = fowl.create('people', {
+var lisa = fowler.create('people', {
   _id: 'lisa',
   name: 'Lisa',
   lastname: 'Jones',
@@ -79,7 +79,7 @@ var lisa = fowl.create('people', {
 });
 
 // Use transactions to transfer money from one account to another
-fowl.transaction(function(tr){
+fowler.transaction(function(tr){
   Promise.all([
     tx.get(['people', 'john']),
     tx.get(['people', 'lisa'])
@@ -93,7 +93,7 @@ fowl.transaction(function(tr){
   // We need to wait for the commit to complete since we are finding the
   // same keypaths.
 
-  fowl.find('people', {balance: 90}, ['lastname']).then(function(docs){
+  fowler.find('people', {balance: 90}, ['lastname']).then(function(docs){
     // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
   })
 })
@@ -104,13 +104,13 @@ fields in a document. Just add indexes specifying a base key path and the
 fields to index:
 
 ```
-fowl.addIndex('people',  ['name', 'balance']);
+fowler.addIndex('people',  ['name', 'balance']);
 ```
 
 It is possible to perform more advanced queries using the Query object:
 
 ```
-var query = fowl.query('people');
+var query = fowler.query('people');
 query
   .eql('lastname', 'Andersson')
   .gt('balance', 15)
@@ -131,7 +131,7 @@ spawning multiple documents.
 
 ## About Key Paths
 
-Key paths are used in fowl to represent the location of some document or
+Key paths are used in fowler to represent the location of some document or
 subdocument. It is just an array of strings (or numbers) that maps to a
 key or key range inside FoundationDB.
 Key paths are more flexible than bucket based collections, as used for example
@@ -292,23 +292,23 @@ __Arguments__
 
 #### transaction##create()
 
-A transactional equivalent to [fowl##create](#create)
+A transactional equivalent to [fowler##create](#create)
 
 #### transaction##put()
 
-A transactional equivalent to [fowl##put](#put)
+A transactional equivalent to [fowler##put](#put)
 
 #### transaction##get()
 
-A transactional equivalent to [fowl##get](#get)
+A transactional equivalent to [fowler##get](#get)
 
 #### transaction##remove()
 
-A transactional equivalent to [fowl##remove](#remove)
+A transactional equivalent to [fowler##remove](#remove)
 
 #### transaction##find()
 
-A transactional equivalent to [fowl##find](#find)
+A transactional equivalent to [fowler##find](#find)
 
 <a name="addIndex"/>
 ### addIndex(keyPath, fields)
@@ -364,10 +364,11 @@ Matches documents where the given property is less or equal than the given value
 Executes the query. Returns a promise that resolves to the result of the query.
 
 
-##License
+## License
 
 (The MIT License)
 
+Copyright (c) 2014 Stefan Thomas <justmoon@members.fsf.org>
 Copyright (c) 2013 Manuel Astudillo <manuel@optimalbits.com>
 
 Permission is hereby granted, free of charge, to any person obtaining

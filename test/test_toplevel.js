@@ -1,6 +1,6 @@
 "use strict";
 
-var fowl = require('../index');
+var fowler = require('../index');
 var chai = require('chai');
 var Promise = require('bluebird');
 
@@ -8,22 +8,22 @@ var expect = chai.expect;
 
 var root = '__tests__';
 
-fowl.open();
+fowler.open();
 
 describe("Top Level", function(){
 
   before(function(){
     return Promise.all([
-      fowl.remove('__ind'),
-      fowl.remove(root),
-      fowl.remove('animals'),
-      fowl.remove('people'),
-      fowl.remove('tests')
+      fowler.remove('__ind'),
+      fowler.remove(root),
+      fowler.remove('animals'),
+      fowler.remove('people'),
+      fowler.remove('tests')
     ]);
   });
 
   after(function(){
-    return fowl.transaction(function(tr){
+    return fowler.transaction(function(tr){
       tr.remove('animals');
       tr.remove('people');
       tr.remove(root);
@@ -32,9 +32,9 @@ describe("Top Level", function(){
   });
 
   it("Create", function(done){
-    fowl.create('animals', {name: 'fox', legs: 4}).then(function(foxId){
+    fowler.create('animals', {name: 'fox', legs: 4}).then(function(foxId){
       expect(foxId).to.be.a('string');
-      fowl.get(['animals', foxId]).then(function(fox){
+      fowler.get(['animals', foxId]).then(function(fox){
         expect(fox).to.be.a('object');
         expect(fox).to.have.property('name');
         expect(fox).to.have.property('legs');
@@ -46,12 +46,12 @@ describe("Top Level", function(){
   });
 
   it("Update document", function(done){
-    fowl.create('animals', {name: 'tiger', legs: 4}).then(function(tigerId){
+    fowler.create('animals', {name: 'tiger', legs: 4}).then(function(tigerId){
       expect(tigerId).to.be.a('string');
 
-      fowl.put(['animals', tigerId], {legs: 3});
+      fowler.put(['animals', tigerId], {legs: 3});
 
-      fowl.get(['animals', tigerId]).then(function(tiger){
+      fowler.get(['animals', tigerId]).then(function(tiger){
         expect(tiger).to.have.property('name');
         expect(tiger).to.have.property('legs');
         expect(tiger.name).to.be.eql('tiger')
@@ -62,10 +62,10 @@ describe("Top Level", function(){
   });
 
   it("Remove document", function(done){
-    fowl.create([root, 'animals'], {name: 'fox', legs: 4}).then(function(docId){
+    fowler.create([root, 'animals'], {name: 'fox', legs: 4}).then(function(docId){
 
-      fowl.remove([root, 'animals', docId]).then(function(){
-        fowl.get([root, 'animals', docId]).then(function(doc){
+      fowler.remove([root, 'animals', docId]).then(function(){
+        fowler.get([root, 'animals', docId]).then(function(doc){
           expect(doc).to.be.a('undefined');
           done();
         });
@@ -74,9 +74,9 @@ describe("Top Level", function(){
   });
 
   it("Find by filtering some property", function(done){
-    fowl.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50}).then(function(){
-      fowl.create([root, 'people'], { name: "Lisa", balance: 30}).then(function(){
-        fowl.find([root, 'people'], {name: "John"}, ['name']).then(function(result){
+    fowler.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50}).then(function(){
+      fowler.create([root, 'people'], { name: "Lisa", balance: 30}).then(function(){
+        fowler.find([root, 'people'], {name: "John"}, ['name']).then(function(result){
           expect(result).to.be.an('array');
           expect(result.length).to.be.eql(1);
           done();
@@ -86,9 +86,9 @@ describe("Top Level", function(){
   });
 
   it("Retrieve individual property", function(done){
-    fowl.create([root, 'people'], { _id: "John", lastname: "Smith", balance: 50}).then(function(){
-      fowl.create([root, 'people'], { _id: "Lisa", balance: 30}).then(function(){
-        fowl.get([root, 'people', 'Lisa', 'balance']).then(function(result){
+    fowler.create([root, 'people'], { _id: "John", lastname: "Smith", balance: 50}).then(function(){
+      fowler.create([root, 'people'], { _id: "Lisa", balance: 30}).then(function(){
+        fowler.get([root, 'people', 'Lisa', 'balance']).then(function(result){
           expect(result).to.be.a('number');
           expect(result).to.be.eql(30);
           done();

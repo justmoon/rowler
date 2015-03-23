@@ -1,6 +1,6 @@
 "use strict";
 
-var fowl = require('../index');
+var fowler = require('../index');
 var chai = require('chai');
 var Promise = require('bluebird');
 
@@ -8,12 +8,12 @@ var expect = chai.expect;
 
 var root = '__tests__';
 
-fowl.open();
+fowler.open();
 
 describe("Queries", function(){
 
   beforeEach(function(){
-    return fowl.transaction(function(tr){
+    return fowler.transaction(function(tr){
       tr.remove('__ind');
       tr.remove(root);
       tr.remove('animals');
@@ -23,7 +23,7 @@ describe("Queries", function(){
   });
 
   after(function(){
-    return fowl.transaction(function(tr){
+    return fowler.transaction(function(tr){
       tr.remove('animals');
       tr.remove('people');
       tr.remove(root);
@@ -33,7 +33,7 @@ describe("Queries", function(){
 
   describe("Equality condition", function(){
     it("Find by filtering some property", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         tr.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50});
         tr.create([root, 'people'], { name: "Lisa", balance: 30});
 
@@ -44,7 +44,7 @@ describe("Queries", function(){
     });
 
     it("Find one between many documents by filtering some property", function(){
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -58,7 +58,7 @@ describe("Queries", function(){
         //
         // Lets find Lisa
         //
-        return fowl.transaction(function(tr){
+        return fowler.transaction(function(tr){
           return tr.find([root, 'people'], {name: "Peter", balance: 30}, ['name', 'balance']);
         }).then(function(result){
           expect(result).to.be.a("array");
@@ -83,8 +83,8 @@ describe("Queries", function(){
     it("Find one between many documents using an indexed property", function(){
       var keyPath = [root, 'indexedpeople'];
 
-      return fowl.addIndex(keyPath, 'name').then(function(){
-        return fowl.transaction(function(tr){
+      return fowler.addIndex(keyPath, 'name').then(function(){
+        return fowler.transaction(function(tr){
           //
           // Add many documents
           //
@@ -111,7 +111,7 @@ describe("Queries", function(){
     it("equality operator", function(){
       var keyPath = [root, 'people'];
 
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -128,8 +128,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowl.transaction(function(tr){
-          var query = fowl.query(keyPath);
+        return fowler.transaction(function(tr){
+          var query = fowler.query(keyPath);
 
           query
             .eql('name', 'Josh')
@@ -147,9 +147,9 @@ describe("Queries", function(){
     it("equality operator using index", function(){
       var keyPath = [root, 'eqlindex', 'people'];
 
-      return fowl.addIndex(keyPath, 'balance').then(function(){
+      return fowler.addIndex(keyPath, 'balance').then(function(){
 
-        return fowl.transaction(function(tr){
+        return fowler.transaction(function(tr){
           //
           // Add many documents
           //
@@ -166,8 +166,8 @@ describe("Queries", function(){
           }
         }).then(function(){
           var time = Date.now();
-          return fowl.transaction(function(tr){
-            var query = fowl.query(keyPath);
+          return fowler.transaction(function(tr){
+            var query = fowler.query(keyPath);
 
             query
               .eql('balance', 30)
@@ -186,7 +186,7 @@ describe("Queries", function(){
     it("Greater than", function(){
       var keyPath = [root, 'people'];
 
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -203,8 +203,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowl.transaction(function(tr){
-          var query = fowl.query(keyPath);
+        return fowler.transaction(function(tr){
+          var query = fowler.query(keyPath);
 
           query
             .gt('balance', 30)
@@ -222,7 +222,7 @@ describe("Queries", function(){
     it("Greater or Equal than", function(){
       var keyPath = [root, 'people'];
 
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -250,8 +250,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowl.transaction(function(tr){
-          var query = fowl.query(keyPath);
+        return fowler.transaction(function(tr){
+          var query = fowler.query(keyPath);
 
           query
             .gte('balance', 30)
@@ -271,7 +271,7 @@ describe("Queries", function(){
     it("Less than", function(){
       var keyPath = [root, 'people'];
 
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -288,8 +288,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowl.transaction(function(tr){
-          var query = fowl.query(keyPath);
+        return fowler.transaction(function(tr){
+          var query = fowler.query(keyPath);
 
           query
             .lt('balance', 45)
@@ -307,7 +307,7 @@ describe("Queries", function(){
     it("Less or equal than", function(){
       var keyPath = [root, 'people'];
 
-      return fowl.transaction(function(tr){
+      return fowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -336,8 +336,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowl.transaction(function(tr){
-          var query = fowl.query(keyPath);
+        return fowler.transaction(function(tr){
+          var query = fowler.query(keyPath);
 
           query
             .lte('balance', 45)
