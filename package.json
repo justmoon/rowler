@@ -1,14 +1,15 @@
 {
-  "name": "fowler",
+  "name": "rowler",
   "version": "1.0.0",
-  "description": "Document and Query Layer for FoundationDB",
+  "description": "Document and Query Layer for CockroachDB",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/ --reporter spec"
   },
   "repository": "git://github.com/justmoon/fowler.git",
   "keywords": [
-    "foundationdb",
+    "cockroach",
+    "cockroachdb",
     "object-modelling",
     "query"
   ],
@@ -26,7 +27,7 @@
   "license": "BSD",
   "dependencies": {
     "bluebird": "2.9.13",
-    "fdb": "justmoon/node-fdb",
+    "roachjs": "^0.2.0",
     "lodash": "^3.3.1",
     "uuid4": "~1.0.0"
   },

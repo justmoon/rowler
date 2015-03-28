@@ -1,20 +1,19 @@
-"use strict";
+'use strict';
 
-var fdb = require('fdb').apiVersion(200);
+var Roach = require('roachjs');
 var Database = require('./lib/database');
 var Query = require('./lib/query');
 var Transaction = require('./lib/transaction');
-
-exports.options = fdb.options;
+var Subspace = require('./lib/subspace');
 
 /**
  * Simplified database API.
  */
 var defaultDb = null;
 
-exports.open = function (clusterFile) {
-  defaultDb = new Database();
-  defaultDb.open(clusterFile);
+exports.open = function (opts) {
+  defaultDb = new Database(opts);
+  defaultDb.open();
 
   exports.transaction = defaultDb.transaction.bind(defaultDb);
   exports.addIndex = defaultDb.addIndex.bind(defaultDb);
@@ -24,11 +23,11 @@ exports.open = function (clusterFile) {
  * Shorthand for single operations.
  */
 Transaction.queryMethods.forEach(function (method) {
-  exports[method] = function(keyPath, args){
-    return defaultDb.transaction(function(tr){
-      return tr[method](keyPath, args);
+  exports[method] = function(keyPath, args) {
+    return defaultDb.transaction(function(tr) {
+      return Promise.resolve(tr[method](keyPath, args));
     });
-  }
+  };
 });
 
 /**
@@ -48,3 +47,4 @@ exports.query = query;
 exports.Database = Database;
 exports.Query = Query;
 exports.Transaction = Transaction;
+exports.Subspace = Subspace;
