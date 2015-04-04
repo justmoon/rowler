@@ -1,6 +1,6 @@
 "use strict";
 
-var fowler = require('../index');
+var rowler = require('../index');
 var chai = require('chai');
 var Promise = require('bluebird');
 
@@ -10,22 +10,22 @@ var root = '__tests__';
 
 describe("Queries", function(){
   before(function () {
-    fowler.open({
-      subspace: new fowler.Subspace([], new Buffer(root, 'utf8'))
+    rowler.open({
+      subspace: new rowler.Subspace([], new Buffer(root, 'utf8'))
     });
   });
 
   beforeEach(function(){
-    return fowler.remove();
+    return rowler.remove();
   });
 
   after(function(){
-    return fowler.remove();
+    return rowler.remove();
   });
 
   describe("Equality condition", function(){
     it("Find by filtering some property", function(){
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         tr.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50});
         tr.create([root, 'people'], { name: "Lisa", balance: 30});
 
@@ -36,7 +36,7 @@ describe("Queries", function(){
     });
 
     it.skip("Find one between many documents by filtering some property", function(){
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -50,7 +50,7 @@ describe("Queries", function(){
         //
         // Lets find Lisa
         //
-        return fowler.transaction(function(tr){
+        return rowler.transaction(function(tr){
           return tr.find([root, 'people'], {name: "Peter", balance: 30}, ['name', 'balance']);
         }).then(function(result){
           expect(result).to.be.a("array");
@@ -75,8 +75,8 @@ describe("Queries", function(){
     it.skip("Find one between many documents using an indexed property", function(){
       var keyPath = [root, 'indexedpeople'];
 
-      return fowler.addIndex(keyPath, 'name').then(function(){
-        return fowler.transaction(function(tr){
+      return rowler.addIndex(keyPath, 'name').then(function(){
+        return rowler.transaction(function(tr){
           //
           // Add many documents
           //
@@ -103,7 +103,7 @@ describe("Queries", function(){
     it("equality operator", function(){
       var keyPath = [root, 'people'];
 
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -120,8 +120,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowler.transaction(function(tr){
-          var query = fowler.query(keyPath);
+        return rowler.transaction(function(tr){
+          var query = rowler.query(keyPath);
 
           query
             .eql('name', 'Josh')
@@ -139,9 +139,9 @@ describe("Queries", function(){
     it("equality operator using index", function(){
       var keyPath = [root, 'eqlindex', 'people'];
 
-      return fowler.addIndex(keyPath, 'balance').then(function(){
+      return rowler.addIndex(keyPath, 'balance').then(function(){
 
-        return fowler.transaction(function(tr){
+        return rowler.transaction(function(tr){
           //
           // Add many documents
           //
@@ -158,8 +158,8 @@ describe("Queries", function(){
           }
         }).then(function(){
           var time = Date.now();
-          return fowler.transaction(function(tr){
-            var query = fowler.query(keyPath);
+          return rowler.transaction(function(tr){
+            var query = rowler.query(keyPath);
 
             query
               .eql('balance', 30)
@@ -178,7 +178,7 @@ describe("Queries", function(){
     it("Greater than", function(){
       var keyPath = [root, 'people'];
 
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -195,8 +195,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowler.transaction(function(tr){
-          var query = fowler.query(keyPath);
+        return rowler.transaction(function(tr){
+          var query = rowler.query(keyPath);
 
           query
             .gt('balance', 30)
@@ -214,7 +214,7 @@ describe("Queries", function(){
     it("Greater or Equal than", function(){
       var keyPath = [root, 'people'];
 
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -242,8 +242,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowler.transaction(function(tr){
-          var query = fowler.query(keyPath);
+        return rowler.transaction(function(tr){
+          var query = rowler.query(keyPath);
 
           query
             .gte('balance', 30)
@@ -263,7 +263,7 @@ describe("Queries", function(){
     it("Less than", function(){
       var keyPath = [root, 'people'];
 
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -280,8 +280,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowler.transaction(function(tr){
-          var query = fowler.query(keyPath);
+        return rowler.transaction(function(tr){
+          var query = rowler.query(keyPath);
 
           query
             .lt('balance', 45)
@@ -299,7 +299,7 @@ describe("Queries", function(){
     it("Less or equal than", function(){
       var keyPath = [root, 'people'];
 
-      return fowler.transaction(function(tr){
+      return rowler.transaction(function(tr){
         //
         // Add many documents
         //
@@ -328,8 +328,8 @@ describe("Queries", function(){
         }
       }).then(function(){
         var time = Date.now();
-        return fowler.transaction(function(tr){
-          var query = fowler.query(keyPath);
+        return rowler.transaction(function(tr){
+          var query = rowler.query(keyPath);
 
           query
             .lte('balance', 45)

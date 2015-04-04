@@ -1,6 +1,6 @@
-# Fowler - NodeJS Document and Query Layer for FDB
+# Rowler - NodeJS Document and Query Layer for CockroachDB
 
-A NodeJS Layer for [FoundationDB](http://www.foundationdb.com) that provides documents and queries
+A NodeJS Layer for [CockroachDB](https://github.com/cockroachdb/cockroach) that provides documents and queries
 with similar capabilities to MongoDB but providing support for
 multidocument transactions.
 
@@ -17,13 +17,13 @@ All asynchronous operations return A+ compliant promises (provided by bluebirdjs
 
 ## Contribute
 
-Do you like Fowler and want to bring it up to the next level? Do not hesitate to
+Do you like rowler and want to bring it up to the next level? Do not hesitate to
 clone the project and start contributing to it! :)
 
 ## Install
 
 ```
-npm install fowler
+npm install rowler
 ```
 
 ## Test
@@ -60,18 +60,18 @@ npm test
 
 
 ```
-// Open a foundationDB database
-fowler.open();
+// Open a CockroachDB database
+rowler.open();
 
 // Create a document (if _id not specify a GUID will be generated)
-var john = fowler.create('people', {
+var john = rowler.create('people', {
   _id: 'john',
   name: 'John',
   lastname: 'Smith',
   balance: 100
 });
 
-var lisa = fowler.create('people', {
+var lisa = rowler.create('people', {
   _id: 'lisa',
   name: 'Lisa',
   lastname: 'Jones',
@@ -79,7 +79,7 @@ var lisa = fowler.create('people', {
 });
 
 // Use transactions to transfer money from one account to another
-fowler.transaction(function(tr){
+rowler.transaction(function(tr){
   Promise.all([
     tx.get(['people', 'john']),
     tx.get(['people', 'lisa'])
@@ -93,7 +93,7 @@ fowler.transaction(function(tr){
   // We need to wait for the commit to complete since we are finding the
   // same keypaths.
 
-  fowler.find('people', {balance: 90}, ['lastname']).then(function(docs){
+  rowler.find('people', {balance: 90}, ['lastname']).then(function(docs){
     // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
   })
 })
@@ -104,13 +104,13 @@ fields in a document. Just add indexes specifying a base key path and the
 fields to index:
 
 ```
-fowler.addIndex('people',  ['name', 'balance']);
+rowler.addIndex('people',  ['name', 'balance']);
 ```
 
 It is possible to perform more advanced queries using the Query object:
 
 ```
-var query = fowler.query('people');
+var query = rowler.query('people');
 query
   .eql('lastname', 'Andersson')
   .gt('balance', 15)
@@ -131,9 +131,9 @@ spawning multiple documents.
 
 ## About Key Paths
 
-Key paths are used in fowler to represent the location of some document or
+Key paths are used in rowler to represent the location of some document or
 subdocument. It is just an array of strings (or numbers) that maps to a
-key or key range inside FoundationDB.
+key or key range inside CockroachDB.
 Key paths are more flexible than bucket based collections, as used for example
 in mongoDB, since it allows you to specify a document or subdocument in a
 generic way.
@@ -172,8 +172,8 @@ method directly and never calling create.
 <a name="open"/>
 ### open([clusterFile, dbName])
 
-Opens a FoundationDB database. This function is just a wrapper on top of
-fdb##open
+Opens a CockroachDB database. This function is just a wrapper on top of
+`new Roach`
 You need to call this method before you can start using the rest of the API.
 
 __Arguments__
@@ -272,12 +272,9 @@ When calling this method, a new transaction object will be created and passed to
 the provided callback function. Once that callback returns, the transaction will
 automatically commit. The callback may return a Promise to delay the commit.
 
-If the callback throws an exception (or rejects its Promise), fdb's retry logic
-will apply. Transactions may also be retried due to committing with [unknown
-result](https://foundationdb.com/key-value-store/documentation/developer-guide.html#transactions-with-unknown-results)
-which means developers should ensure transactions are idempotent.
-
-This method is analogous to `fdb#doTransaction`.
+If the callback throws an exception (or rejects its Promise), `roachjs`'s retry logic
+will apply. Transactions may also be retried due to committing with unknown
+result which means developers should ensure transactions are idempotent.
 
 __Arguments__
 
@@ -292,23 +289,23 @@ __Arguments__
 
 #### transaction##create()
 
-A transactional equivalent to [fowler##create](#create)
+A transactional equivalent to [rowler##create](#create)
 
 #### transaction##put()
 
-A transactional equivalent to [fowler##put](#put)
+A transactional equivalent to [rowler##put](#put)
 
 #### transaction##get()
 
-A transactional equivalent to [fowler##get](#get)
+A transactional equivalent to [rowler##get](#get)
 
 #### transaction##remove()
 
-A transactional equivalent to [fowler##remove](#remove)
+A transactional equivalent to [rowler##remove](#remove)
 
 #### transaction##find()
 
-A transactional equivalent to [fowler##find](#find)
+A transactional equivalent to [rowler##find](#find)
 
 <a name="addIndex"/>
 ### addIndex(keyPath, fields)
