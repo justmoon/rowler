@@ -27,7 +27,7 @@
   "license": "BSD",
   "dependencies": {
     "bluebird": "2.9.13",
-    "roachjs": "herenow/roachjs",
+    "roachjs": "justmoon/roachjs",
     "lodash": "^3.3.1",
     "uuid4": "~1.0.0"
   },
