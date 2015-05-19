@@ -1,6 +1,6 @@
 {
   "name": "rowler",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Document and Query Layer for CockroachDB",
   "main": "index.js",
   "scripts": {
